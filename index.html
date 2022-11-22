@@ -69,25 +69,40 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id = "Console-Log">Console Log</button>
+      <button id = "Console-Error">Console Error</button>
+      <button id = "Console-Count">Console Count</button>
+      <button id = "Console-Warn">Console Warn</button>
+      <button id = "Console-Assert">Console Assert</button>
+      <button id = "Console-Clear">Console Clear</button>
+      <button id = "Console-Dir">Console Dir</button>
+      <button id = "Console-Dirxml">Console dirxml</button>
+      <button id = "Console-Group-Start">Console Group Start</button>
+      <button id = "Console-Group-End">Console Group End</button>
+      <button id = "Console-Table">Console Table</button>
+      <button id = "Start-Timer">Start Timer</button>
+      <button id = "End-Timer">End Timer</button>
+      <button id = "Console-Trace">Console Trace</button>
+      <button id = "Trigger-Global-Error">Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+                        
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "21049ce0c7e241e8b7b55df2f8558f47"
+    });
+
+    TrackJS.track('Testing TrackJS!');
+
+    class DivideByZero extends Error {
+      constructor (message, cause) {
+        super(message);
+        this.cause = cause;
+        this.name = "User want divide by ZERO";
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +110,133 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (secondNum == '0' && operator == '/') {
+          throw new DivideByZero("Invalid division by ZERO", "Can not devide by ZERO!");
+        } else {
+          output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+        }
+      } catch (error) {
+        if (error instanceof DivideByZero) {
+          alert(error.cause);
+        }
+        throw error;
+      } finally {
+        console.log("Done the calcualtor");
+      }
+      
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    const consoleLog = document.getElementById("Console-Log");
+    const consoleError = document.getElementById("Console-Error");
+    const consoleCount = document.getElementById("Console-Count");
+    const consoleWarn = document.getElementById("Console-Warn");
+    const consoleAssert = document.getElementById("Console-Assert");
+    const consoleClear = document.getElementById("Console-Clear");
+    const consoleDir = document.getElementById("Console-Dir");
+    const consoleDirxml = document.getElementById("Console-Dirxml");
+    const consoleGroupStart = document.getElementById("Console-Group-Start");
+    const consoleGroupEnd = document.getElementById("Console-Group-End");
+    const consoleTable = document.getElementById("Console-Table");
+    const startTimer = document.getElementById("Start-Timer");
+    const endTimer = document.getElementById("End-Timer");
+    const consoleTrace = document.getElementById("Console-Trace");
+    const triggerGlobalError = document.getElementById("Trigger-Global-Error");
+
+    consoleLog.addEventListener("click", function() {
+      console.log("Console Log Demo");
+    });
+
+    consoleError.addEventListener("click", function() {
+      console.error("Console Error Demo");
+    });
+
+    consoleCount.addEventListener("click", function() {
+      console.count("Count Button");
+    });
+
+    consoleWarn.addEventListener("click", function() {
+      console.warn("Console Warn Button");
+    });
+
+    consoleAssert.addEventListener("click", function() {
+      let number = 2;
+      console.assert(number === 3, {number: number, errorMsg: "The number does not equal 3"});
+    });
+
+    consoleClear.addEventListener("click", function() {
+      console.clear();
+    });
+    
+    consoleDir.addEventListener("click", function() {
+      console.dir(consoleDir);
+    });
+
+    consoleDirxml.addEventListener("click", function() {
+      console.dirxml(consoleDirxml);
+    });
+
+    consoleGroupStart.addEventListener("click", function() {
+      console.group("console.group");
+    });
+
+    consoleGroupEnd.addEventListener("click", function() {
+      console.groupEnd();
+    });
+
+    consoleTable.addEventListener("click", function() {
+
+    function Person(name, height) {
+      this.name = name;
+      this.height = height;
+    }
+
+    const lanmei = new Person("Lanmei", 180);
+    const chenfei = new Person("Chenfei", 181);
+    const felix = new Person("Felix", 182);
+    let array = [lanmei, chenfei, felix];
+    console.table(array);
+    });
+
+    startTimer.addEventListener("click", function() {
+      console.time("Timmer Button");
+    });
+
+    endTimer.addEventListener("click", function() {
+      console.timeEnd("Timmer Button");
+    });
+
+    
+    function deep() {
+        function deeper() {
+          console.trace();
+          
+        }
+        deeper();
+      }
+
+    function handleBtnClick() {
+      deep();
+    }
+
+    consoleTrace.addEventListener("click", handleBtnClick);
+
+    triggerGlobalError.addEventListener("click", function handleBtnClick() {
+      boom();
+    });
+
+    window.onerror = function (errorMsg, url, lineNumber) {
+      console.log("Sadly an error happened my Friend");
+      return false;
+    }
+
+
+
+
   </script>
 </body>
 
